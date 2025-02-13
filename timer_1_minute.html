@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Social Club Timer</title>
+
+    <style>
+      body {
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+        background-color: black;
+        font-family: monospace, sans-serif;
+        color: white;
+      }
+
+      .container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+
+      .timer {
+        position: relative;
+        width: 480px;
+        height: 480px;
+      }
+
+      .background-ring {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: rgba(255, 255, 255, 0.1);
+      }
+
+      .progress-ring {
+        position: absolute;
+        inset: 0;
+        border-radius: 50%;
+        background: conic-gradient(
+          from 0deg,
+          rgb(255, 59, 59) 0%,
+          transparent 0%
+        );
+        filter: drop-shadow(0 0 8px rgba(255, 59, 59, 0.5));
+      }
+
+      .inner-circle {
+        position: absolute;
+        inset: 10%;
+        border-radius: 50%;
+        background-color: black;
+      }
+
+      .timer-text {
+        position: absolute;
+        inset: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 6rem;
+        font-weight: bold;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="timer">
+        <div class="background-ring"></div>
+        <div class="progress-ring"></div>
+        <div class="inner-circle"></div>
+        <div class="timer-text">00:00</div>
+      </div>
+    </div>
+    <script>
+      const duration = 60; // Duration in seconds
+      let progress = 0; // Progress percentage (0 to 100)
+
+      const timerText = document.querySelector(".timer-text");
+      const progressRing = document.querySelector(".progress-ring");
+
+      const updateInterval = 10; // Update every 10ms for smooth transitions
+      const totalSteps = (duration * 1000) / updateInterval; // Total number of updates
+      const increment = 100 / totalSteps; // Percentage increment per update
+
+      let elapsedTime = 0;
+
+      function updateTimer() {
+        elapsedTime += updateInterval;
+
+        // Calculate remaining time in seconds
+        const timeLeft = Math.max(duration + 1 - elapsedTime / 1000, 0);
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = Math.floor(timeLeft % 60);
+
+        // Update timer text
+        timerText.textContent = `${String(minutes).padStart(2, "0")}:${String(
+          seconds
+        ).padStart(2, "0")}`;
+
+        // Update progress percentage
+        progress = Math.min(progress + increment, 100);
+        progressRing.style.background = `conic-gradient(
+          from 0deg,
+          rgb(255, 59, 59) ${progress}%,
+          transparent ${progress}%
+        )`;
+
+        // Stop the timer when duration is completed
+        if (elapsedTime >= (duration + 1) * 1000) {
+          clearInterval(timerInterval);
+        }
+      }
+
+      const timerInterval = setInterval(updateTimer, updateInterval);
+    </script>
+  </body>
+</html>
